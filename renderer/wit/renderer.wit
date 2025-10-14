@@ -1,66 +1,66 @@
 package cleggct:wasm-pixels;
 
 interface types {
-  enum blend-mode { none, alpha, additive, multiply }
-  enum tex-filter { nearest, linear }
-  enum tex-wrap   { clamp, repeat }
+    enum blend-mode { none, alpha, additive, multiply }
+    enum tex-filter { nearest, linear }
+    enum tex-wrap   { clamp, repeat }
 
-  record camera {
-    origin-x: f32,
-    origin-y: f32,
-    scale: f32,
-    rotation: f32,
-  }
+    record camera {
+        origin-x: f32,
+        origin-y: f32,
+        scale: f32,
+        rotation: f32,
+    }
 
-  record sprite {
-    atlas-id: u16,
-    tile-index: u16,
-    x: s32,
-    y: s32,
-    z: f32,
-    flip: u8,   // bit 0 = X, bit 1 = Y
-    tint: u32,  // RGBA8
-  }
+    record sprite {
+        atlas-id: u16,
+        tile-index: u16,
+        x: s32,
+        y: s32,
+        z: f32,
+        flip: u8,   // bit 0 = X, bit 1 = Y
+        tint: u32,  // RGBA8
+    }
 
-  record tiles {
-    atlas-id: u16,
-    x: s32,
-    y: s32,
-    z: f32,
-    grid-w: u16,
-    grid-h: u16,
-    cell-w: u16,
-    cell-h: u16,
-    tiles: list<u16>,
-  }
+    record tiles {
+        atlas-id: u16,
+        x: s32,
+        y: s32,
+        z: f32,
+        grid-w: u16,
+        grid-h: u16,
+        cell-w: u16,
+        cell-h: u16,
+        tiles: list<u16>,
+    }
 
-  record atlas-params {
-    id: u16,
-    width: u16, height: u16,
-    tile-w: u16, tile-h: u16,
-    cols: u16, rows: u16,
-    filter: tex-filter,
-    wrap: tex-wrap,
-  }
+    record atlas-params {
+        id: u16,
+        width: u16, height: u16,
+        tile-w: u16, tile-h: u16,
+        cols: u16, rows: u16,
+        filter: tex-filter,
+        wrap: tex-wrap,
+    }
 
-  record atlas-rect-chunk {
-    id: u16,
-    x: u16, y: u16, w: u16, h: u16,
-    data: list<u8>, // RGBA8, len = w*h*4
-  }
+    record atlas-rect-chunk {
+        id: u16,
+        x: u16, y: u16, w: u16, h: u16,
+        data: list<u8>, // RGBA8, len = w*h*4
+    }
 
-  // The renderer emits commands; the JS host executes them.
-  variant command {
-    begin-frame(option<u32>),
-    end-frame,
-    set-blend(blend-mode),
-    set-camera(camera),
-    create-atlas(atlas-params),
-    upload-atlas-chunk(atlas-rect-chunk),
-    finalize-atlas(u16),
-    draw-sprite(sprite),
-    draw-tiles(tiles),
-  }
+    // The renderer emits commands; the JS host executes them.
+    variant command {
+        begin-frame(option<u32>),
+            end-frame,
+            set-blend(blend-mode),
+            set-camera(camera),
+            create-atlas(atlas-params),
+            upload-atlas-chunk(atlas-rect-chunk),
+            finalize-atlas(u16),
+            draw-sprite(sprite),
+            draw-tiles(tiles),
+    }
 }
 
 interface renderer {
@@ -81,7 +81,7 @@ interface renderer {
 
     // Host pulls & drains after demo.tick():
     get-commands:       func() -> list<command>;
-    
+
     set-logical-size: func(width: u32, height: u32);
 }
 

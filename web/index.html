@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>wasm-pixels</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <style>
+            html,body{margin:0;height:100%;background:#111}
+            #c{width:100%;height:100%;display:block;image-rendering:pixelated}
+        </style>
+    </head>
+    <body>
+        <canvas id="c"></canvas>
+
+        <script type="module">
+            import { createRendererHost } from './renderer_host.js';
+            import rendererMod from './renderer/index.js'; // jco output for the renderer
+
+            const params = new URLSearchParams(location.search);
+            const demoName = params.get('demo') || 'testapp';
+            const demoUrl  = `./demos/${demoName}/index.js`; // jco output for the demo
+
+            const canvas = document.getElementById('c');
+            const host = createRendererHost(canvas, { logicalWidth: 800, logicalHeight: 450 });
+
+            const rendererInst = await rendererMod({});
+            const renderer = rendererInst.exports['cleggct:wasm-pixels/renderer'];
+
+            const demoMod = (await import(demoUrl)).default;
+            const demoInst = await demoMod({ 'cleggct:wasm-pixels/renderer': renderer });
+            const app = demoInst.exports['cleggct:wasm-pixels/app'];
+
+            function resize() {
+              const dpr = Math.max(1, Math.round(window.devicePixelRatio || 1));
+              const r = canvas.getBoundingClientRect();
+              const w = Math.max(1, Math.round(r.width  * dpr));
+              const h = Math.max(1, Math.round(r.height * dpr));
+              if (canvas.width !== w || canvas.height !== h) {
+                canvas.width = w; canvas.height = h;
+                host.gl.viewport(0, 0, w, h);
+              }
+            }
+            addEventListener('resize', resize);
+            resize();
+
+            app.init();
+            let last = performance.now();
+            function frame(now) {
+              resize();
+              const dt = now - last; last = now;
+              app.tick(dt);
+              host.exec(R['get-commands']());
+              requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
+        </script>
+    </body>
+</html>
