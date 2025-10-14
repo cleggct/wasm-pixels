@@ -27,7 +27,7 @@ impl Guest for Renderer {
     fn set_blend(mode: ty::BlendMode) { push(ty::Command::SetBlend(mode)); }
     fn set_camera(cam: ty::Camera) { push(ty::Command::SetCamera(cam)); }
 
-    fn create_atlas(desc: ty::AtlasCreate) { push(ty::Command::CreateAtlas(desc)); }
+    fn create_atlas(desc: ty::AtlasParams) { push(ty::Command::CreateAtlas(desc)); }
     fn upload_atlas_chunk(ch: ty::AtlasRectChunk) { push(ty::Command::UploadAtlasChunk(ch)); }
     fn finalize_atlas(id: u16) { push(ty::Command::FinalizeAtlas(id)); }
 
@@ -41,11 +41,7 @@ impl Guest for Renderer {
         out
     }
 
-    fn init(width: u32, height: u32) {
-        let mut st = STATE.lock().unwrap();
-        st.w = width; st.h = height; st.q.clear();
-    }
-    fn resize(width: u32, height: u32) {
+    fn set_logical_size(width: u32, height: u32) {
         let mut st = STATE.lock().unwrap();
         st.w = width; st.h = height;
     }
