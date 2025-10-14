@@ -1,5 +1,5 @@
 This project was the culmination of many scrapped prototypes exploring how to wire web assembly (in this case,
-WASI components) with WebGL with the goal of providing a foundation for righting speedy graphics demos that
+WASI components) with WebGL with the goal of providing a foundation for writing speedy graphics demos that
 run in the browser.
 
 Given that emscripten can basically let you do all of this (it supports not only OpenGL ES -> WebGL but also SDL2) the project has begun to seem a bit redundant to me, but it was a good learning experience as well as my
